@@ -65,6 +65,9 @@ class WPJobster_Iyzipay_Loader {
 		add_action( 'plugins_loaded',   array( $this, 'init_gateways' ), 0 );
 		add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ),
 										array( $this, 'plugin_action_links' ) );
+		//written by salvatore
+		add_filter( 'wpjobster_take_allowed_currency_' . $this->unique_slug,
+										array( $this,'get_gateway_currency' ) );
 
 		add_action( 'wpjobster_taketo_' . $this->unique_slug . '_gateway',
 										array( $this, 'taketogateway_function' ), 10,2);
@@ -72,13 +75,24 @@ class WPJobster_Iyzipay_Loader {
 		add_action( 'wpjobster_processafter_' . $this->unique_slug . '_gateway',
 										array( $this, 'processgateway_function' ), 10,2);
 
+		//written by salvatore
+		// add_action( 'wpjobster_taketo_' . $this->unique_slug . '_gateway',
+		// 								array( $this, 'taketogateway_function' ), 10, 2 );
+		// add_action( 'wpjobster_processafter_' . $this->unique_slug . '_gateway',
+		// 								array( $this, 'processgateway_function' ), 10, 2 );
+
 
 		if ( isset( $_POST[ 'wpjobster_save_' . $this->unique_slug ] ) ) {
 			add_action( 'wpjobster_payment_methods_action', array( $this, 'save_gateway' ), 11 );
 		}
 	}
-
-	
+	//written by salvatore
+	function get_gateway_currency( $currency ) {
+		// if the gateway requires a specific currency you can declare it there
+		// currency conversions are done automatically
+		$currency = 'USD'; // delete this line if the gateway works with any currency
+		return $currency;
+	}
 
 	/**
 	 * Initialize the gateway. Called very early - in the context of the plugins_loaded action
